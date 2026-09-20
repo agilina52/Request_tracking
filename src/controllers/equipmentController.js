@@ -1,8 +1,10 @@
 'use strict';
 
 class EquipmentController {
-  constructor(service) {
-    this.service = service;
+  constructor(equipmentService, requestService, weatherService) {
+    this.service = equipmentService;
+    this.requestService = requestService;
+    this.weatherService = weatherService;
   }
 
   list = async (req, res) => {
@@ -29,6 +31,18 @@ class EquipmentController {
   delete = async (req, res) => {
     await this.service.delete(req.validated.params.id);
     res.status(204).end();
+  };
+
+  listRequests = async (req, res) => {
+    const { query, params } = req.validated;
+    const { items, total } = await this.requestService.listByEquipment(params.id, query);
+    res.json({ data: items, meta: { total, page: query.page, limit: query.limit } });
+  };
+
+  getWeather = async (req, res) => {
+    const equipment = await this.service.getById(req.validated.params.id);
+    const weather = await this.weatherService.getWorkWindow(equipment.location);
+    res.json({ data: { equipmentId: equipment.id, location: equipment.location, ...weather } });
   };
 }
 

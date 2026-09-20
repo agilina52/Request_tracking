@@ -5,7 +5,7 @@ const config = require('./config');
 const requestContext = require('./middlewares/requestContext');
 const notFound = require('./middlewares/notFound');
 const errorHandler = require('./middlewares/errorHandler');
-const routes = require('./routes');
+const createRouter = require('./routes');
 
 function createApp() {
   const app = express();
@@ -15,7 +15,7 @@ function createApp() {
   app.use(requestContext);
   app.use(express.json({ limit: config.bodyLimit }));
 
-  app.use('/api', routes);
+  app.use('/api', createRouter());
 
   app.use(notFound);
   app.use(errorHandler);

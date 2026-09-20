@@ -2,11 +2,20 @@
 
 const { Router } = require('express');
 const healthController = require('../controllers/healthController');
-const equipmentRoutes = require('./equipmentRoutes');
+const createContainer = require('../container');
+const createEquipmentRouter = require('./equipmentRoutes');
+const createRequestRouter = require('./requestRoutes');
 
-const router = Router();
+function createRouter() {
+  const { equipmentController, requestController } = createContainer();
 
-router.get('/health', healthController.get);
-router.use('/equipment', equipmentRoutes);
+  const router = Router();
 
-module.exports = router;
+  router.get('/health', healthController.get);
+  router.use('/equipment', createEquipmentRouter(equipmentController));
+  router.use('/requests', createRequestRouter(requestController));
+
+  return router;
+}
+
+module.exports = createRouter;
