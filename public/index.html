@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Заявки на обслуживание</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; color: #1f2933; }
+    h1 { font-size: 1.5rem; }
+    section { margin-bottom: 2rem; }
+    label { display: block; margin-top: 0.5rem; font-size: 0.9rem; }
+    input, select { padding: 0.4rem; margin-top: 0.2rem; min-width: 220px; }
+    button { margin-top: 1rem; padding: 0.5rem 1rem; cursor: pointer; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+    th, td { border: 1px solid #cbd2d9; padding: 0.5rem; text-align: left; }
+    .ok { color: #1f7a1f; }
+    .error { color: #b30000; }
+  </style>
+</head>
+<body>
+  <h1>Заявки на обслуживание оборудования</h1>
+
+  <section>
+    <h2>Фильтры</h2>
+    <label>Статус
+      <select id="filter-status">
+        <option value="">Все</option>
+        <option value="new">new</option>
+        <option value="in_progress">in_progress</option>
+        <option value="done">done</option>
+        <option value="rejected">rejected</option>
+      </select>
+    </label>
+    <label>Приоритет
+      <select id="filter-priority">
+        <option value="">Все</option>
+        <option value="low">low</option>
+        <option value="medium">medium</option>
+        <option value="high">high</option>
+        <option value="critical">critical</option>
+      </select>
+    </label>
+    <button id="apply-filters" type="button">Применить</button>
+  </section>
+
+  <section>
+    <h2>Список заявок</h2>
+    <table>
+      <thead>
+        <tr><th>Название</th><th>Приоритет</th><th>Статус</th><th>Оборудование</th></tr>
+      </thead>
+      <tbody id="requests-body"></tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Создать заявку</h2>
+    <form id="create-form">
+      <label>API-ключ
+        <input id="api-key" value="change-me" required>
+      </label>
+      <label>ID оборудования
+        <input id="equipmentId" required placeholder="uuid оборудования">
+      </label>
+      <label>Название (5–120 символов)
+        <input id="title" required minlength="5" maxlength="120">
+      </label>
+      <label>Описание
+        <input id="description" maxlength="2000">
+      </label>
+      <label>Приоритет
+        <select id="priority">
+          <option value="low">low</option>
+          <option value="medium">medium</option>
+          <option value="high">high</option>
+          <option value="critical">critical</option>
+        </select>
+      </label>
+      <button type="submit">Создать</button>
+    </form>
+    <p id="message"></p>
+  </section>
+
+  <script src="/app.js"></script>
+</body>
+</html>
