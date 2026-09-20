@@ -1,0 +1,20 @@
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      CORS_ORIGINS: http://localhost:3000
+      RATE_LIMIT_WINDOW_MS: 60000
+      RATE_LIMIT_MAX: 100
+      WEATHER_API_URL: https://api.open-meteo.com/v1/forecast
+      REQUEST_TIMEOUT_MS: 5000
+      WEATHER_MAX_WIND_MS: 15
+      WEATHER_MAX_PRECIPITATION_MM: 0
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    restart: unless-stopped
