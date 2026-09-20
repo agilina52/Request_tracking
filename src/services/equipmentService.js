@@ -4,8 +4,9 @@ const crypto = require('node:crypto');
 const { NotFoundError, ConflictError } = require('../errors');
 
 class EquipmentService {
-  constructor(repository) {
+  constructor(repository, requestRepository) {
     this.repository = repository;
+    this.requestRepository = requestRepository;
   }
 
   async list(query) {
@@ -42,6 +43,12 @@ class EquipmentService {
 
   async delete(id) {
     await this.getById(id);
+
+    const openRequests = await this.requestRepository.findOpenByEquipmentId(id);
+    if (openRequests.length > 0) {
+      throw new ConflictError('Нельзя удалить оборудование с открытыми заявками');
+    }
+
     await this.repository.delete(id);
   }
 }
