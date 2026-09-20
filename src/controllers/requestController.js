@@ -16,6 +16,13 @@ class RequestController {
     res.status(201).location(`/api/requests/${request.id}`).json({ data: request });
   };
 
+  importMany = async (req, res) => {
+    const results = await this.service.importMany(req.validated.body.requests);
+    const created = results.filter((item) => item.status === 'created').length;
+    const failed = results.filter((item) => item.status === 'failed').length;
+    res.status(207).json({ data: { total: results.length, created, failed, results } });
+  };
+
   getById = async (req, res) => {
     const request = await this.service.getById(req.validated.params.id);
     res.json({ data: request });

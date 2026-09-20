@@ -11,6 +11,7 @@ function createRequestRouter(controller) {
 
   router.get('/', validate({ query: requestSchemas.listQuery }), asyncHandler(controller.list));
   router.post('/', apiKeyAuth, validate({ body: requestSchemas.createBody }), asyncHandler(controller.create));
+  router.post('/import', apiKeyAuth, validate({ body: requestSchemas.importBody }), asyncHandler(controller.importMany));
   router.get('/:id', validate({ params: requestSchemas.idParams }), asyncHandler(controller.getById));
   router.patch('/:id', apiKeyAuth, validate({ params: requestSchemas.idParams, body: requestSchemas.updateBody }), asyncHandler(controller.update));
   router.patch('/:id/status', apiKeyAuth, validate({ params: requestSchemas.idParams, body: requestSchemas.statusBody }), asyncHandler(controller.changeStatus));
