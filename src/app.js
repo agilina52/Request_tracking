@@ -1,5 +1,6 @@
 'use strict';
 
+const path = require('node:path');
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -45,6 +46,8 @@ function createApp() {
   app.use(express.json({ limit: config.bodyLimit }));
 
   app.use('/api', createRouter());
+
+  app.use(express.static(path.join(__dirname, '..', 'public')));
 
   app.use(notFound);
   app.use(errorHandler);
