@@ -2,6 +2,7 @@
 
 const crypto = require('node:crypto');
 const { NotFoundError, ConflictError } = require('../errors');
+const requestSchemas = require('../validators/requestSchemas');
 
 const TRANSITIONS = {
   new: ['in_progress', 'rejected'],
@@ -62,6 +63,43 @@ class RequestService {
   async delete(id) {
     await this.getById(id);
     await this.repository.delete(id);
+  }
+
+  async importMany(records) {
+    const results = [];
+
+    for (let index = 0; index < records.length; index++) {
+      const { error, value } = requestSchemas.createBody.validate(records[index], {
+        abortEarly: false,
+        stripUnknown: true,
+      });
+
+      if (error) {
+        results.push({
+          index,
+          status: 'failed',
+          error: {
+            code: 'VALIDATION_ERROR',
+            message: 'Некорректные данные заявки',
+            details: error.details.map((item) => ({ field: item.path.join('.'), message: item.message })),
+          },
+        });
+        continue;
+      }
+
+      try {
+        const request = await this.create(value);
+        results.push({ index, status: 'created', request });
+      } catch (err) {
+        results.push({
+          index,
+          status: 'failed',
+          error: { code: err.code ?? 'INTERNAL_ERROR', message: err.message },
+        });
+      }
+    }
+
+    return results;
   }
 
   async ensureEquipmentExists(equipmentId) {

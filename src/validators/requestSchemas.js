@@ -25,6 +25,10 @@ const statusBody = Joi.object({
   status: Joi.string().valid(...STATUSES).required(),
 });
 
+const importBody = Joi.object({
+  requests: Joi.array().items(Joi.object()).min(1).required(),
+});
+
 const listQuery = Joi.object({
   status: Joi.string().valid(...STATUSES),
   priority: Joi.string().valid(...PRIORITIES),
@@ -37,4 +41,4 @@ const listQuery = Joi.object({
   limit: Joi.number().integer().min(1).max(100).default(20),
 });
 
-module.exports = { idParams, createBody, updateBody, statusBody, listQuery };
+module.exports = { idParams, createBody, updateBody, statusBody, importBody, listQuery };
