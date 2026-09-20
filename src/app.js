@@ -2,6 +2,7 @@
 
 const express = require('express');
 const helmet = require('helmet');
+const cors = require('cors');
 const config = require('./config');
 const requestContext = require('./middlewares/requestContext');
 const notFound = require('./middlewares/notFound');
@@ -15,6 +16,12 @@ function createApp() {
 
   app.use(requestContext);
   app.use(helmet());
+  app.use(
+    cors({
+      origin: config.corsOrigins,
+      methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+    })
+  );
   app.use(express.json({ limit: config.bodyLimit }));
 
   app.use('/api', createRouter());
